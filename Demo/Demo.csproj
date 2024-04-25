@@ -11,4 +11,8 @@
     <ProjectReference Include="..\HomeKit.Net\HomeKit.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="WakeOnLAN" Version="2.0.2" />
+  </ItemGroup>
+
 </Project>

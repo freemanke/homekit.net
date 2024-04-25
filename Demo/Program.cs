@@ -1,57 +1,49 @@
-﻿using HomeKit.Net;
+﻿using System.Net;
+using System.Net.NetworkInformation;
+using HomeKit.Net;
 
-namespace Demo
+namespace Demo;
+
+public class Program
 {
-    internal class Program
+    public static async Task Main(string[] args)
     {
-        private async static Task SingleAccessory()
+        await SingleAccessory();
+    }
+    
+    public static async Task SingleAccessory()
+    {
+        var tokenSource = new CancellationTokenSource();
+        var driver = new AccessoryDriver(port: 6555);
+        var accessory = new ComputerSwitch(driver, "计算机开关");
+        accessory.OnChange += async _ =>
         {
+            var macAddress = "7C:10:C9:8C:87:43";
+            await PhysicalAddress.Parse(macAddress.Replace(":", "-")).SendWolAsync();
+            Console.WriteLine($"唤醒计算机 {macAddress}");
+        };
 
-            var cts = new CancellationTokenSource();
-            //先定义驱动
-            var driver = new AccessoryDriver(port: 6555);
-            //定义配件
-            var switchAccessory1 = new Switch(driver, "switch开关");
-            //添加开关状态被苹果手机的家庭app改变后的回调
-            switchAccessory1.OnChange += async (o) =>
-            {
-                Console.WriteLine("The switch state has changed.开关状态变化了");
-            };
+        driver.AddAccessory(accessory);
+        await driver.StartAsync(tokenSource.Token);
+    }
 
-            driver.AddAccessory(switchAccessory1);
-            await driver.StartAsync(cts.Token);
-        }
-
-        private async static Task MultipleAccessories()
+    public static async Task MultipleAccessories()
+    {
+        var tokenSource = new CancellationTokenSource();
+        var driver = new AccessoryDriver(port: 6554);
+        var bridge = new Bridge(driver, "网关");
+        var computerSwitch = new ComputerSwitch(driver, "计算机开关");
+        bridge.AddAccessory(computerSwitch);
+        computerSwitch.OnChange += async _ =>
         {
+            var macAddress = "7C:10:C9:8C:87:43";
+            await PhysicalAddress.Parse(macAddress.Replace(":", "-")).SendWolAsync();
+            Console.WriteLine($"唤醒计算机 {macAddress}");
+        };
 
-            var cts = new CancellationTokenSource();
-            //先定义驱动
-            var driver = new AccessoryDriver(port: 6554);
-            //定义网关
-            var bridge = new Bridge(driver, "网关");
-            //定义配件1开关
-            var switchAccessory1 = new Switch(driver, "开关switch");
-            bridge.AddAccessory(switchAccessory1);
-            //添加开关状态被苹果手机的家庭app改变后的回调
-            switchAccessory1.OnChange += async (o) =>
-            {
-                Console.WriteLine("The switch state has changed.开关状态变化了");
-            };
-            //定义配件2传感器
-            var temperatureSensor= new TemperatureSensor(driver, "传感器TemperatureSensor");
-            bridge.AddAccessory(temperatureSensor);
-            driver.AddAccessory(bridge);
-            await driver.StartAsync(cts.Token);
-        }
-
-        async static Task Main(string[] args)
-        {
-            //Test Multiple Accessories 测试单配件
-            await SingleAccessory();
-            //Test Multiple Accessories 测试多配件
-            //await MultipleAccessories();
-
-        }
+        var sensor = new TemperatureSensor(driver, "温度传感器");
+        bridge.AddAccessory(sensor);
+        driver.AddAccessory(bridge);
+        await driver.StartAsync(tokenSource.Token);
     }
 }
