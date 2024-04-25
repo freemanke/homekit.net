@@ -15,9 +15,9 @@ public class TemperatureSensor : Accessory
     public TemperatureSensor(AccessoryDriver driver, string name, CancellationToken token = default)
         : base(driver, name)
     {
-        var service = AddPreloadService("Temperature Sensor");
+        var service = AddPreloadService("TemperatureSensor");
         Category = Category.CATEGORY_SENSOR;
-        CurrentTemperatureCharacteristics = service.GetCharacteristics("Current Temperature");
+        CurrentTemperatureCharacteristics = service.GetCharacteristics("CurrentTemperature");
         CurrentTemperatureCharacteristics.SetValue(1);
         timer = new Timer(Test, token, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
     }
