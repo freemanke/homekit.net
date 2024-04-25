@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeKit.Net", "HomeKit.Net\HomeKit.Net.csproj", "{FCCAB9B3-7C41-4FD8-BD20-B20EC200110B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeKit.NetTest", "HomeKit.NetTest\HomeKit.NetTest.csproj", "{64AAF245-AB72-4339-8111-B4EF6AAA0061}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeKit.Net.Test", "HomeKit.Net.Test\HomeKit.Net.Test.csproj", "{64AAF245-AB72-4339-8111-B4EF6AAA0061}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{5EB41556-CD67-4EE5-BC0C-9D68D51A6896}"
 EndProject

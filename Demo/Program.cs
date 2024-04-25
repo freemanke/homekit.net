@@ -13,7 +13,6 @@ public class Program
     
     public static async Task SingleAccessory()
     {
-        var tokenSource = new CancellationTokenSource();
         var driver = new AccessoryDriver(port: 6555);
         var accessory = new ComputerSwitch(driver, "计算机开关");
         accessory.OnChange += async _ =>
@@ -24,7 +23,7 @@ public class Program
         };
 
         driver.AddAccessory(accessory);
-        await driver.StartAsync(tokenSource.Token);
+        await driver.StartAsync(new CancellationTokenSource().Token);
     }
 
     public static async Task MultipleAccessories()
