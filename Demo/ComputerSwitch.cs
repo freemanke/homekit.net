@@ -16,11 +16,12 @@ public class ComputerSwitch : Accessory
 {
     public bool IsOn { get; private set; }
     
-    public event Action<bool>? OnChange; 
-    
     /// <summary>
     /// 苹果手机家庭应用控制操作后的回调方法
     /// </summary>
+    public event Action<bool>? OnChange; 
+    
+
     public Characteristics CurrentOnCharacteristics { get; }
 
     /// <summary>
