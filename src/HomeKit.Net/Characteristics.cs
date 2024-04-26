@@ -2,53 +2,50 @@ using Newtonsoft.Json;
 
 namespace HomeKit.Net;
 
+/// <summary>
+/// Characteristics
+/// </summary>
 public class Characteristics : IAssignIid
 {
     /// <summary>
-    /// Characteristics Id
-    /// 特征ID
+    /// Characteristics ID
     /// </summary>
     public Guid Iid { get; set; }
 
     /// <summary>
     /// Characteristics Name
-    /// 特征名称
     /// </summary>
     public string Name { get; set; }
-
     public string Format { get; set; }
-
     public List<string> Permissions { get; set; }
-
     public string HapType { get; set; }
-
     public Accessory Accessory { get; set; }
-
     public int? MaxValue { get; set; }
-
-    public int? MinStep { get; set; }
     public int? MinValue { get; set; }
-    public int? MaximumLength { get; set; }
+    public int? MaxLength { get; set; }
+    public int? MinStep { get; set; }
     public string Unit { get; set; }
 
     private object Value;
 
-    [JsonIgnore] public Service Service { get; set; }
+    [JsonIgnore] 
+    public Service Service { get; set; }
 
     /// <summary>
-    /// Valid Values;有效值列表
+    /// Valid Values
     /// </summary>
     [JsonIgnore]
-    public List<KeyValuePair<string, string>> ValidValues { get; set; } = new List<KeyValuePair<string, string>>();
+    public List<KeyValuePair<string, string>> ValidValues { get; set; } = new();
 
     /// <summary>
-    /// Callback when value is set;设置值时回调
+    /// Callback when value is set
     /// </summary>
-    public Action<object> SetValueCallback { get; set; }
+    public Action<object>? SetValueCallback { get; set; }
+    
     /// <summary>
-    /// Callback when getting value;获取值时回调
+    /// Callback when getting value
     /// </summary>
-    public Func<object> GetValueCallback { get; set; }
+    public Func<object>? GetValueCallback { get; set; }
 
     public Characteristics(Guid iid)
     {
@@ -71,12 +68,11 @@ public class Characteristics : IAssignIid
         HapType = Utils.GuidToHapType(Iid);
     }
 
-    private bool IsNumberFormat => Const.HAP_FORMAT_NUMERICS.Contains(Format);
+    private bool IsNumberFormat => Constants.HAP_FORMAT_NUMERICS.Contains(Format);
 
     /// <summary>
-    /// Get Value;获取值
+    /// Get Value
     /// </summary>
-    /// <returns></returns>
     public object GetValue()
     {
         if (GetValueCallback != null)
@@ -90,7 +86,7 @@ public class Characteristics : IAssignIid
     }
 
     /// <summary>
-    /// Set Value;获取值
+    /// Set Value
     /// </summary>
     /// <param name="value"></param>
     public void SetValue(object value)
@@ -111,16 +107,16 @@ public class Characteristics : IAssignIid
 
 
     /// <summary>
-    /// Notify clients about a value change. Sends the value；通知客户端值发生了更改
+    /// Notify clients about a value change. Sends the value
     /// </summary>
     private void Notify(string connectionString = "")
     {
-        var immediate = Const.IMMEDIATE_NOTIFY.Contains(Iid);
+        var immediate = Constants.IMMEDIATE_NOTIFY.Contains(Iid);
         Accessory.Publish(GetValue(), this, connectionString, immediate);
     }
 
     /// <summary>
-    /// Valid Value In ValidValues;校验值是否在有效值列表内
+    /// Valid Value In ValidValues
     /// </summary>
     /// <param name="value"></param>
     /// <typeparam name="T"></typeparam>
@@ -145,7 +141,7 @@ public class Characteristics : IAssignIid
     /// <returns></returns>
     public object ValidValue(object value)
     {
-        if (Format == Const.HAP_FORMAT_STRING)
+        if (Format == Constants.HAP_FORMAT_STRING)
         {
             if (value is not string str)
             {
@@ -157,7 +153,7 @@ public class Characteristics : IAssignIid
             return str;
         }
 
-        if (Format == Const.HAP_FORMAT_BOOL)
+        if (Format == Constants.HAP_FORMAT_BOOL)
         {
             if (value is bool boolValue)
             {
@@ -167,7 +163,7 @@ public class Characteristics : IAssignIid
             return Convert.ToBoolean(value);
         }
 
-        if (Const.HAP_FORMAT_NUMERICS.Contains(Format))
+        if (Constants.HAP_FORMAT_NUMERICS.Contains(Format))
         {
             if (!(value is int || value is float))
             {
@@ -236,15 +232,15 @@ public class Characteristics : IAssignIid
             }
         }
 
-        if (Format == Const.HAP_FORMAT_STRING)
+        if (Format == Constants.HAP_FORMAT_STRING)
         {
-            if (MaximumLength.HasValue && MaximumLength.Value != Const.DEFAULT_MAX_LENGTH)
+            if (MaxLength.HasValue && MaxLength.Value != Constants.DEFAULT_MAX_LENGTH)
             {
-                result.MaxLen = MaximumLength.Value;
+                result.MaxLen = MaxLength.Value;
             }
         }
 
-        if (Permissions.Contains(Const.HAP_PERMISSION_READ))
+        if (Permissions.Contains(Constants.HAP_PERMISSION_READ))
         {
             result.Value = tempValue;
         }
@@ -265,14 +261,15 @@ public class Characteristics : IAssignIid
             return ValidValues.Select(it => it.Value).FirstOrDefault();
         }
 
-        return Const.HAP_FORMAT_DEFAULTS[Format];
+        return Constants.HAP_FORMAT_DEFAULTS[Format];
     }
 
     /// <summary>
-    /// Called from broker for value change in Home app, Change self.value to value and call callback;home app里修改值，则特征里的值也要跟着更新
+    /// Called from broker for value change in Home app, Change self.
+    /// value to value and call callback
     /// </summary>
     /// <param name="value"></param>
-    /// <param name="clientInfo"></param>
+    /// <param name="connectionString"></param>
     public void ClientUpdateValue(object value, string connectionString)
     {
         var originalValue = value;
@@ -301,6 +298,7 @@ public class Characteristics : IAssignIid
     }
 
     public bool IsInAlwaysNull => Iid == new Guid("00000073-0000-1000-8000-0026BB765291");
+   
     public override string ToString()
     {
         return $"name:{Name},format:{Format},value:{Value}";

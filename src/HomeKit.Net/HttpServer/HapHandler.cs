@@ -37,7 +37,7 @@ public class HapHandler
         var length = c2.Length;
         // Console.WriteLine($"length:{length}");
         e.Response.ContentLength = length;
-        e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+        e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
         e.Response.Write(c2);
         return;
     }
@@ -67,7 +67,7 @@ public class HapHandler
                     var length = c2.Length;
                     // Console.WriteLine($"length:{length}");
                     e.Response.ContentLength = length;
-                    e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+                    e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
                     e.Response.Write(c2);
                     return;
                 }
@@ -90,7 +90,7 @@ public class HapHandler
                     // Console.WriteLine($"length:{length}");
 
                     e.Response.ContentLength = length;
-                    e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+                    e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
                     e.Response.Headers["Server"] = "Kestrel";
                     // e.Response.Headers["Transfer-Encoding"] = "chunked";
                     e.Response.Headers["Date"] = DateTime.UtcNow.ToString("r");
@@ -114,7 +114,7 @@ public class HapHandler
                     var length = c2.Length;
                     // Console.WriteLine($"length:{length}");
                     e.Response.ContentLength = length;
-                    e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+                    e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
                     e.Response.Write(c2);
                 }
                 else if (sequence == Hap_Tlv_States.M5)
@@ -125,12 +125,12 @@ public class HapHandler
                     var sessionKey = Driver.SrpServer.Kb;
 
                     var hkdf = HKDF.DeriveKey(new HashAlgorithmName(nameof(SHA512)), sessionKey, 32,
-                        Const.PAIRING_3_SALT,
-                        Const.PAIRING_3_INFO);
+                        Constants.PAIRING_3_SALT,
+                        Constants.PAIRING_3_INFO);
 
                     using var key = Key.Import(AeadAlgorithm.ChaCha20Poly1305, hkdf, KeyBlobFormat.RawSymmetricKey);
                     var decryptedData =
-                        AeadAlgorithm.ChaCha20Poly1305.Decrypt(key, Const.PAIRING_3_NONCE, new byte[0],
+                        AeadAlgorithm.ChaCha20Poly1305.Decrypt(key, Constants.PAIRING_3_NONCE, new byte[0],
                             encryptedData.Value);
                     var tlvItems = new Tlv().Decode(decryptedData);
                     var clientUserName = tlvItems.FirstOrDefault(it => it.Tag[0] == (byte)Hap_Tlv_Tags.USERNAME);
@@ -139,7 +139,7 @@ public class HapHandler
 
                     Console.WriteLine($"Pairing [4/5]");
                     var outputKey = HKDF.DeriveKey(new HashAlgorithmName(nameof(SHA512)), sessionKey, 32,
-                        Const.PAIRING_4_SALT, Const.PAIRING_4_INFO);
+                        Constants.PAIRING_4_SALT, Constants.PAIRING_4_INFO);
                     var data = Utils.MergeBytes(outputKey, clientUserName.Value, clientLtpk.Value);
                     var ed25519 = SignatureAlgorithm.Ed25519;
 
@@ -153,7 +153,7 @@ public class HapHandler
                     Console.WriteLine($"Pairing [5/5]");
 
                     var outputKey5 = HKDF.DeriveKey(new HashAlgorithmName(nameof(SHA512)), sessionKey, 32,
-                        Const.PAIRING_5_SALT, Const.PAIRING_5_INFO);
+                        Constants.PAIRING_5_SALT, Constants.PAIRING_5_INFO);
 
                     var mac = Driver.State.Mac.ToBytes();
                     var serverPublic = Driver.State.PublicKey;
@@ -167,7 +167,7 @@ public class HapHandler
                     tlvItems5.Add(new TlvItem(new byte[] { (byte)Hap_Tlv_Tags.PROOF }, serverProof5));
                     var message5 = new Tlv().Encode(tlvItems5);
                     var decryptedData5 =
-                        AeadAlgorithm.ChaCha20Poly1305.Encrypt(key, Const.PAIRING_5_NONCE, new byte[0], message5);
+                        AeadAlgorithm.ChaCha20Poly1305.Encrypt(key, Constants.PAIRING_5_NONCE, new byte[0], message5);
 
                     var clientUsernameStr = clientUserName.Value.GetString();
                     var clientGuid = new Guid(clientUsernameStr);
@@ -183,7 +183,7 @@ public class HapHandler
                     var length = message6.Length;
                     // Console.WriteLine($"length:{length}");
                     e.Response.ContentLength = length;
-                    e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+                    e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
                     e.Response.Write(message6);
                 }
             }
@@ -210,7 +210,7 @@ public class HapHandler
         var bytes = currentJson.ToBytes();
         e.Response.HapCrypto = HapCrypto;
         e.Response.ContentLength = bytes.Length;
-        e.Response.ContentType = Const.JSON_RESPONSE_TYPE;
+        e.Response.ContentType = Constants.JSON_RESPONSE_TYPE;
         e.Response.Write(bytes);
         Console.WriteLine("GetAccessories 结束");
     }
@@ -218,7 +218,7 @@ public class HapHandler
     public async Task GetCharacteristics(HttpContext e)
     {
         Console.WriteLine($"{e.ConnectionString} GetCharacteristics");
-        Const.Flag = true;
+        Constants.Flag = true;
         var query = e.Request.Query["id"];
         var topics = query.Split(",").ToList();
 
@@ -239,7 +239,7 @@ public class HapHandler
             {
                 Characteristics characteristics = null;
                 var available = false;
-                if (aid == Const.STANDALONE_AID)
+                if (aid == Constants.STANDALONE_AID)
                 {
                     characteristics = Driver.Accessory.IidManager.GetObject(iid) as Characteristics;
                     available = true;
@@ -316,7 +316,7 @@ public class HapHandler
         var bytes = currentJson.ToBytes();
         e.Response.HapCrypto = HapCrypto;
         e.Response.ContentLength = bytes.Length;
-        e.Response.ContentType = Const.JSON_RESPONSE_TYPE;
+        e.Response.ContentType = Constants.JSON_RESPONSE_TYPE;
         e.Response.Write(bytes);
         Console.WriteLine("GetCharacteristics结束");
     }
@@ -350,7 +350,7 @@ public class HapHandler
 
                     if (item.Ev.HasValue)
                     {
-                        var topic = Const.GetTopic(item.Aid, item.Iid);
+                        var topic = Constants.GetTopic(item.Aid, item.Iid);
                         var action = item.Ev == true ? "Subscribed" : "Unsubscribed";
                         Console.WriteLine($"{action} client {e.ConnectionString} to topic {topic}");
                         await Driver.SubscribeClientTopic(e.ConnectionString, topic, true);
@@ -420,7 +420,7 @@ public class HapHandler
             e.Response.HapCrypto = HapCrypto;
             e.Response.StatusCode = StatusCode.MULTI_STATUS;
             e.Response.ContentLength = bytes.Length;
-            e.Response.ContentType = Const.JSON_RESPONSE_TYPE;
+            e.Response.ContentType = Constants.JSON_RESPONSE_TYPE;
             Console.WriteLine("SetCharacteristics 结束前");
             e.Response.Write(bytes);
             Console.WriteLine("SetCharacteristics 结束");
@@ -496,8 +496,8 @@ public class HapHandler
                     var serverProof5 = Ed25519.Ed25519.Sign(ed25519Key5, material);
 
                     var hkdf = HKDF.DeriveKey(new HashAlgorithmName(nameof(SHA512)), sharedSecret, 32,
-                        Const.PVERIFY_1_SALT,
-                        Const.PVERIFY_1_INFO);
+                        Constants.PVERIFY_1_SALT,
+                        Constants.PVERIFY_1_INFO);
 
                     PairVerifyOneEncryptionContext = new PairVerifyOneEncryptionContext()
                     {
@@ -515,7 +515,7 @@ public class HapHandler
 
                     using var k = Key.Import(AeadAlgorithm.ChaCha20Poly1305, hkdf, KeyBlobFormat.RawSymmetricKey);
                     var decryptedData5 =
-                        AeadAlgorithm.ChaCha20Poly1305.Encrypt(k, Const.PVERIFY_1_NONCE, new byte[0], message5);
+                        AeadAlgorithm.ChaCha20Poly1305.Encrypt(k, Constants.PVERIFY_1_NONCE, new byte[0], message5);
 
                     var tlvItem6 = new List<TlvItem>();
                     tlvItem6.Add(new TlvItem(new byte[] { (byte)Hap_Tlv_Tags.SEQUENCE_NUM },
@@ -527,7 +527,7 @@ public class HapHandler
                     e.Response.StatusCode = StatusCode.Status200OK;
                     var length = message6.Length;
                     e.Response.ContentLength = length;
-                    e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+                    e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
                     e.Response.Write(message6);
                 }
                 else if (sequence == Hap_Tlv_States.M3)
@@ -540,7 +540,7 @@ public class HapHandler
                     byte[] decryptedData;
                     try
                     {
-                        decryptedData = AeadAlgorithm.ChaCha20Poly1305.Decrypt(k, Const.PVERIFY_2_NONCE,
+                        decryptedData = AeadAlgorithm.ChaCha20Poly1305.Decrypt(k, Constants.PVERIFY_2_NONCE,
                             new byte[0],
                             encryptedDataBytes.Value);
                     }
@@ -588,7 +588,7 @@ public class HapHandler
                     HapCrypto = new HapCrypto(PairVerifyOneEncryptionContext.SharedKey);
                     // Console.WriteLine($"length:{length}");
                     e.Response.ContentLength = length;
-                    e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+                    e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
                     e.Response.Write(c2);
                 }
             }
@@ -655,7 +655,7 @@ public class HapHandler
         e.Response.HapCrypto = HapCrypto;
         var length = c2.Length;
         e.Response.ContentLength = length;
-        e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+        e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
         e.Response.Write(c2);
     }
 
@@ -673,7 +673,7 @@ public class HapHandler
         var length = c2.Length;
         e.Response.HapCrypto = HapCrypto;
         e.Response.ContentLength = length;
-        e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+        e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
         e.Response.Write(c2);
     }
 
@@ -695,7 +695,7 @@ public class HapHandler
         var length = c2.Length;
         e.Response.ContentLength = length;
         e.Response.HapCrypto = HapCrypto;
-        e.Response.ContentType = Const.PAIRING_RESPONSE_TYPE;
+        e.Response.ContentType = Constants.PAIRING_RESPONSE_TYPE;
         e.Response.Write(c2);
     }
 }

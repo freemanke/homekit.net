@@ -54,8 +54,8 @@ public class SrpServer
     {
         HashFunc = hashFunc;
 
-        N = new BigInteger(Const.SrpNStr.ToHexByte(), true, true);
-        g = new BigInteger(int.Parse(Const.SrpGStr));
+        N = new BigInteger(Constants.SrpNStr.ToHexByte(), true, true);
+        g = new BigInteger(int.Parse(Constants.SrpGStr));
         Nlen = 3072;
         s = salt ?? GenerateSalt();
         I = i;

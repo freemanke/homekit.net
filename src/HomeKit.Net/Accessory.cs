@@ -14,7 +14,7 @@ public abstract class Accessory
     /// <param name="accessoryDriver">Accessory Driver</param>
     /// <param name="name">Accessory name</param>
     /// <param name="aid">Accessory ID</param>
-    protected Accessory(AccessoryDriver accessoryDriver, string name, int aid = Const.STANDALONE_AID)
+    protected Accessory(AccessoryDriver accessoryDriver, string name, int aid = Constants.STANDALONE_AID)
     {
         AccessoryDriver = accessoryDriver;
         Name = name;

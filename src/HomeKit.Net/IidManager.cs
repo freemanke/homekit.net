@@ -1,41 +1,33 @@
 namespace HomeKit.Net;
 
 /// <summary>
-/// Maintains a mapping between Service/Characteristic objects and IIDs;维护服务/特征对象和 IID 之间的映射。
+/// Maintains a mapping between Service/Characteristic objects and IIDs
 /// </summary>
 public class IidManager
 {
-    private int Counter;
-    private Dictionary<IAssignIid, int> mapping;
+    private int counter;
+    private Dictionary<IAssignIid, int> mapping = new();
 
-    public IidManager()
+    private int GetNewIid()
     {
-        Counter = 0;
-        mapping = new Dictionary<IAssignIid, int>();
-    }
-
-    private int GetNewId()
-    {
-        Counter++;
-        return Counter;
+        counter++;
+        return counter;
     }
 
     /// <summary>
-    /// Assign an IID to given object;给对象分配分配iid
+    /// Assign an IID to given object
     /// </summary>
-    /// <param name="obj"></param>
-    /// <typeparam name="T"></typeparam>
-    public void Assign<T>(T obj) where T : IAssignIid
+    public void Assign<T>(T o) where T : IAssignIid
     {
-        if (!mapping.ContainsKey(obj))
+        if (!mapping.ContainsKey(o))
         {
-            var iid = GetNewId();
-            mapping[obj] = iid;
+            var iid = GetNewIid();
+            mapping[o] = iid;
         }
     }
 
     /// <summary>
-    /// Get the object that is assigned the given IID;获取已分配iid的对象
+    /// Get the object that is assigned the given IID
     /// </summary>
     /// <param name="iid"></param>
     /// <returns></returns>
@@ -54,64 +46,56 @@ public class IidManager
     }
 
     /// <summary>
-    /// Get the IID assigned to the given object;获取已分配iid的对象的iid
+    /// Get the IID assigned to the given object
     /// </summary>
-    /// <param name="obj"></param>
+    /// <param name="o"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public int GetIid(IAssignIid obj)
+    public int GetIid(IAssignIid o)
     {
         foreach (var pair in mapping)
         {
-            if (pair.Key == obj)
+            if (pair.Key == o)
             {
                 return pair.Value;
             }
         }
 
-        throw new Exception($"can not find iid with object {obj.ToString()}");
+        throw new Exception($"can not find iid with object {o}");
     }
 
     /// <summary>
-    /// Remove an object from the mapping;从映射中移除对象
+    /// Remove an object from the mapping
     /// </summary>
-    /// <param name="obj"></param>
+    /// <param name="o"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public int RemoveObject(IAssignIid obj)
+    public int RemoveObject(IAssignIid o)
     {
-        if (mapping.ContainsKey(obj))
+        if (mapping.ContainsKey(o))
         {
-            var iid = mapping[obj];
-            mapping.Remove(obj);
+            var iid = mapping[o];
+            mapping.Remove(o);
             return iid;
         }
-        throw new Exception($"can not find iid with object  {obj.ToString()}");
+        throw new Exception($"can not find iid with object  {o}");
     }
 
     /// <summary>
-    /// Remove an object with an IID from the mapping；通过iid从映射中移除对象
+    /// Remove an object with an IID from the mapping
     /// </summary>
     /// <param name="iid"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public IAssignIid RemoveIid(int iid)
     {
-        IAssignIid key = null;
-        foreach (var pair in mapping)
+        var pairs = mapping.Where(a => a.Value == iid).ToList();
+        foreach(var pair in pairs)
         {
-            if (pair.Value == iid)
-            {
-                key = pair.Key;
-            }
+            mapping.Remove(pair.Key);
+            return pair.Key;
         }
 
-        if (key != null)
-        {
-            mapping.Remove(key);
-            return key;
-        }
-
-        throw new Exception($"can not find iid with iid  {iid}");
+        throw new Exception($"can not find iid with iid {iid}");
     }
 }

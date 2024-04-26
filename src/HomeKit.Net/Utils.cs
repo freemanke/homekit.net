@@ -385,7 +385,7 @@ public static class Utils
     public static string GuidToHapType(Guid guid)
     {
         var longType = guid.ToString().ToUpper();
-        if (!longType.EndsWith(Const.BASE_UUID))
+        if (!longType.EndsWith(Constants.BASE_UUID))
         {
             return longType;
         }
@@ -400,7 +400,7 @@ public static class Utils
             return new Guid(hapType);
         }
 
-        var result = hapType.PadLeft(8, '0') + Const.BASE_UUID;
+        var result = hapType.PadLeft(8, '0') + Constants.BASE_UUID;
         return new Guid(result);
     }
 

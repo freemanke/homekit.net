@@ -3,16 +3,17 @@ using HomeKit.Net.Enums;
 namespace HomeKit.Net;
 
 /// <summary>
-/// A representation of a HAP bridge.A `Bridge` can have multiple `Accessories`;hap桥接器，一个桥接器里，有多个配件
+/// A representation of a HAP bridge.
+/// A `Bridge` can have multiple `Accessories`
 /// </summary>
 public class Bridge : Accessory
 {
-    public Dictionary<int, Accessory> Accessories { get; set; }
+    public Dictionary<int, Accessory> Accessories { get; } = new();
 
-    public Bridge(AccessoryDriver accessoryDriver, string name) : base(accessoryDriver, name)
+    public Bridge(AccessoryDriver accessoryDriver, string name) 
+        : base(accessoryDriver, name)
     {
         Category = Category.CATEGORY_BRIDGE;
-        Accessories = new Dictionary<int, Accessory>();
     }
 
     public void AddAccessory(Accessory accessory)
@@ -24,8 +25,8 @@ public class Bridge : Accessory
 
         if (accessory.Aid == Aid)
         {
-            //For some reason AID=7 gets unsupported. See issue #61
-            for (int i = 2; i < 100; i++)
+            // For some reason AID=7 gets unsupported. See issue #61
+            for (var i = 2; i < 100; i++)
             {
                 if (i != Aid && i != 7 && Accessories.Keys.All(it => it != i))
                 {
@@ -51,18 +52,13 @@ public class Bridge : Accessory
         }
 
         var accessory = Accessories[aid];
-        if (accessory == null)
-        {
-            return null;
-        }
-
         return accessory.GetAccessoryCharacteristic(aid, iid);
     }
 
-    public List<AccessoryHapJson> ToHap()
+    public List<AccessoryHapJson> ToHaps()
     {
         var list = Accessories.Select(it => it.Value.ToHap()).ToList();
-        list.Add(((Accessory)this).ToHap());
+        list.Add(ToHap());
         return list;
     }
 }

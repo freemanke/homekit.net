@@ -36,7 +36,7 @@ public class AccessoryMDNSServiceInfo
         var result = new Dictionary<string, string>()
         {
             {"md", GetValidName()},
-            {"pv", Const.HAP_PROTOCOL_SHORT_VERSION},
+            {"pv", Constants.HAP_PROTOCOL_SHORT_VERSION},
             {"id", State.Mac},
             {"c#", State.ConfigVersion.ToString()},
             {"s#", "1"},

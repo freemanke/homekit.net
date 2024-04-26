@@ -33,7 +33,7 @@ public class State
         Address = address ?? Utils.GetIpAddress();
         Mac = string.IsNullOrWhiteSpace(mac) ? Utils.GenerateMac() : mac;
         PinCode = pinCode ?? Utils.GeneratePinCode();
-        Port = port ?? Const.DEFAULT_PORT;
+        Port = port ?? Constants.DEFAULT_PORT;
         SetupId = Utils.GenerateSetupId();
         ConfigVersion = 2;
         // Const.DEFAULT_CONFIG_VERSION;
@@ -52,7 +52,7 @@ public class State
             return false;
         }
 
-        var result = ClientProperties[clientUuid][Const.CLIENT_PROP_PERMS] & ADMIN_BIT;
+        var result = ClientProperties[clientUuid][Constants.CLIENT_PROP_PERMS] & ADMIN_BIT;
         return result > 0;
     }
 
@@ -62,7 +62,7 @@ public class State
         // var str = Encoding.UTF8.GetString(perms);
         // Console.WriteLine($"Add Paired Client:{clientUuid.ToString()}");
         ClientProperties[clientUuid] = new Dictionary<string, byte>()
-            {{Const.CLIENT_PROP_PERMS, perms.Length > 0 ? perms[0] : (byte) 0}};
+            {{Constants.CLIENT_PROP_PERMS, perms.Length > 0 ? perms[0] : (byte) 0}};
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public class State
     public void IncrementConfigVersion()
     {
         ConfigVersion++;
-        if (ConfigVersion > Const.MAX_CONFIG_VERSION)
+        if (ConfigVersion > Constants.MAX_CONFIG_VERSION)
         {
             ConfigVersion = 1;
         }

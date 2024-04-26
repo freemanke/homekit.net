@@ -1,64 +1,64 @@
 namespace HomeKit.Net;
 
-public static class Const
+public static class Constants
 {
-    public static string BASE_UUID = "-0000-1000-8000-0026BB765291";
+    public const string BASE_UUID = "-0000-1000-8000-0026BB765291";
 
     // Standalone accessory ID (i.e. not bridged)
     public const int STANDALONE_AID = 1;
 
     //Default values
-    public static int DEFAULT_CONFIG_VERSION = 1;
-    public static int DEFAULT_PORT = 51827;
+    public const int DEFAULT_CONFIG_VERSION = 1;
+    public const int DEFAULT_PORT = 51827;
 
     //Configuration version
-    public static int MAX_CONFIG_VERSION = 65535;
+    public const int MAX_CONFIG_VERSION = 65535;
 
     //HAP Permissions 
-    public static string HAP_PERMISSION_HIDDEN = "hd";
-    public static string HAP_PERMISSION_NOTIFY = "ev";
-    public static string HAP_PERMISSION_READ = "pr";
-    public static string HAP_PERMISSION_WRITE = "pw";
-    public static string HAP_PERMISSION_WRITE_RESPONSE = "wr";
+    public const string HAP_PERMISSION_HIDDEN = "hd";
+    public const string HAP_PERMISSION_NOTIFY = "ev";
+    public const string HAP_PERMISSION_READ = "pr";
+    public const string HAP_PERMISSION_WRITE = "pw";
+    public const string HAP_PERMISSION_WRITE_RESPONSE = "wr";
 
     // HAP representation 
-    public static string HAP_REPR_ACCS = "accessories";
-    public static string HAP_REPR_AID = "aid";
-    public static string HAP_REPR_CHARS = "characteristics";
-    public static string HAP_REPR_DESC = "description";
-    public static string HAP_REPR_FORMAT = "format";
-    public static string HAP_REPR_IID = "iid";
-    public static string HAP_REPR_MAX_LEN = "maxLen";
-    public static string HAP_REPR_PERM = "perms";
-    public static string HAP_REPR_PID = "pid";
-    public static string HAP_REPR_PRIMARY = "primary";
-    public static string HAP_REPR_SERVICES = "services";
-    public static string HAP_REPR_LINKED = "linked";
-    public static string HAP_REPR_STATUS = "status";
-    public static string HAP_REPR_TTL = "ttl";
-    public static string HAP_REPR_TYPE = "type";
-    public static string HAP_REPR_VALUE = "value";
-    public static string HAP_REPR_VALID_VALUES = "valid-values";
+    public const string HAP_REPR_ACCS = "accessories";
+    public const string HAP_REPR_AID = "aid";
+    public const string HAP_REPR_CHARS = "characteristics";
+    public const string HAP_REPR_DESC = "description";
+    public const string HAP_REPR_FORMAT = "format";
+    public const string HAP_REPR_IID = "iid";
+    public const string HAP_REPR_MAX_LEN = "maxLen";
+    public const string HAP_REPR_PERM = "perms";
+    public const string HAP_REPR_PID = "pid";
+    public const string HAP_REPR_PRIMARY = "primary";
+    public const string HAP_REPR_SERVICES = "services";
+    public const string HAP_REPR_LINKED = "linked";
+    public const string HAP_REPR_STATUS = "status";
+    public const string HAP_REPR_TTL = "ttl";
+    public const string HAP_REPR_TYPE = "type";
+    public const string HAP_REPR_VALUE = "value";
+    public const string HAP_REPR_VALID_VALUES = "valid-values";
 
-    public static string HAP_PROTOCOL_VERSION = "01.01.00";
-    public static string HAP_PROTOCOL_SHORT_VERSION = "1.1";
+    public const string HAP_PROTOCOL_VERSION = "01.01.00";
+    public const string HAP_PROTOCOL_SHORT_VERSION = "1.1";
 
     //Client properties
-    public static string CLIENT_PROP_PERMS = "permissions";
+    public const string CLIENT_PROP_PERMS = "permissions";
 
     //HAP Format
-    public static string HAP_FORMAT_BOOL = "bool";
-    public static string HAP_FORMAT_INT = "int";
-    public static string HAP_FORMAT_FLOAT = "float";
-    public static string HAP_FORMAT_STRING = "string";
-    public static string HAP_FORMAT_ARRAY = "array";
-    public static string HAP_FORMAT_DICTIONARY = "dictionary";
-    public static string HAP_FORMAT_UINT8 = "uint8";
-    public static string HAP_FORMAT_UINT16 = "uint16";
-    public static string HAP_FORMAT_UINT32 = "uint32";
-    public static string HAP_FORMAT_UINT64 = "uint64";
-    public static string HAP_FORMAT_DATA = "data";
-    public static string HAP_FORMAT_TLV8 = "tlv8";
+    public const string HAP_FORMAT_BOOL = "bool";
+    public const string HAP_FORMAT_INT = "int";
+    public const string HAP_FORMAT_FLOAT = "float";
+    public const string HAP_FORMAT_STRING = "string";
+    public const string HAP_FORMAT_ARRAY = "array";
+    public const string HAP_FORMAT_DICTIONARY = "dictionary";
+    public const string HAP_FORMAT_UINT8 = "uint8";
+    public const string HAP_FORMAT_UINT16 = "uint16";
+    public const string HAP_FORMAT_UINT32 = "uint32";
+    public const string HAP_FORMAT_UINT64 = "uint64";
+    public const string HAP_FORMAT_DATA = "data";
+    public const string HAP_FORMAT_TLV8 = "tlv8";
 
     public static List<string> HAP_FORMAT_NUMERICS = new List<string>()
     {

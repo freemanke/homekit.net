@@ -9,9 +9,6 @@ using PublishedService = HomeKit.Net.Traffic.PublishedService;
 using Publisher = HomeKit.Net.Traffic.Publisher;
 using TrafficMonitor = HomeKit.Net.Traffic.TrafficMonitor;
 
-// using ServiceDiscovery = HomeKitSharp.HomeKit.MDns.ServiceDiscovery;
-// using ServiceProfile = HomeKitSharp.HomeKit.MDns.ServiceProfile;
-
 namespace HomeKit.Net;
 
 public class AccessoryDriver
@@ -147,7 +144,7 @@ public class AccessoryDriver
                     Client = service,
                     LongName = MdnsServiceInfo.Name,
                     ShortName = MdnsServiceInfo.Name,
-                    ServiceType = Const.HAP_SERVICE_TYPE + "local.",
+                    ServiceType = Constants.HAP_SERVICE_TYPE + "local.",
                     Port = (ushort)this.Port,
                     TxtRecord = dicPropertys,
                 };
@@ -243,7 +240,7 @@ public class AccessoryDriver
 
         if (Accessory is Bridge bridge)
         {
-            result.Accessories = bridge.ToHap();
+            result.Accessories = bridge.ToHaps();
         }
         else
         {
@@ -254,7 +251,7 @@ public class AccessoryDriver
 
     public void Publish(SendEventDataItem sendDataItem, string connectionString = "", bool immediate = false)
     {
-        var topic = Const.GetTopic(sendDataItem.Aid, sendDataItem.Iid);
+        var topic = Constants.GetTopic(sendDataItem.Aid, sendDataItem.Iid);
         if (!Topics.ContainsKey(topic))
         {
             return;
