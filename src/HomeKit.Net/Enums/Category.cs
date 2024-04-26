@@ -1,7 +1,8 @@
 namespace HomeKit.Net.Enums;
 
 /// <summary>
-/// Category is a hint to iOS clients about what "type" of Accessory this represents, for UI only.This is for the icon in the iOS Home app.
+/// Category is a hint to iOS clients about what "type" of Accessory this represents,
+/// for UI only.This is for the icon in the iOS Home app.
 /// Category 是对 iOS 客户端的提示，提示这是什么“类型”的配件，仅用于 UI。这是用于展示 iOS Home 应用程序中配件的图标。
 /// </summary>
 public enum Category
@@ -34,5 +35,5 @@ public enum Category
     CATEGORY_FAUCET = 29,
     CATEGORY_SHOWER_HEAD = 30,
     CATEGORY_TELEVISION = 31,
-    CATEGORY_TARGET_CONTROLLER = 32  // Remote Controller
+    CATEGORY_TARGET_CONTROLLER = 32
 }
