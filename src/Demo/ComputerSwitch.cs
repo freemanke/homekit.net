@@ -27,8 +27,8 @@ public class ComputerSwitch : Accessory
     /// <summary>
     /// 计算机开关
     /// </summary>
-    public ComputerSwitch(AccessoryDriver driver, string name, int? aid = null)
-        : base(driver, name, aid)
+    public ComputerSwitch(AccessoryDriver driver, string name)
+        : base(driver, name)
     {
         var service = AddPreloadService("Switch");
         Category = Category.CATEGORY_SWITCH;

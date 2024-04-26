@@ -31,7 +31,7 @@ public class AccessoryDriver
 
     public Channel Channel { get; set; }
 
-    private object lockObj = new object();
+    private readonly object locker = new object();
 
     private CancellationToken token;
     public AccessoryDriver(byte[] pinCode = null, int port = 51234, string mac = null,
@@ -200,7 +200,7 @@ public class AccessoryDriver
             List<string> clientInfos;
             if (Topics.ContainsKey(topic))
             {
-                lock (lockObj)
+                lock (locker)
                 {
                     clientInfos = Topics[topic];
                     if (!clientInfos.Contains(connectionString))
@@ -215,7 +215,7 @@ public class AccessoryDriver
                 {
                     connectionString
                 };
-                lock (lockObj)
+                lock (locker)
                 {
                     Topics.Add(topic, clientInfos);
                 }
@@ -223,7 +223,7 @@ public class AccessoryDriver
         }
         else
         {
-            lock (lockObj)
+            lock (locker)
             {
                 if (Topics.Keys.All(it => it != topic))
                 {
@@ -278,7 +278,7 @@ public class AccessoryDriver
             $"EVENT/1.0 200 OK\r\nContent-Type: application/hap+json\r\nContent-Length: {bytes.Length}\r\n\r\n{currentJson}"
                 .ToBytes();
 
-        lock (lockObj)
+        lock (locker)
         {
             var removeList = new List<string>();
             foreach (var subscribeClient in subscribeClients)

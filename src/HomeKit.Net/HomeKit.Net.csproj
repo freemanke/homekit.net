@@ -18,33 +18,28 @@ HomeKit's C# native SDK, which can simulate HomeKit's smart home devices</Packag
 		<Copyright>MIT</Copyright>
 		<IsPackable>true</IsPackable>
 		<PackageProjectUrl>https://github.com/TripleView/HomeKit.Net</PackageProjectUrl>
-		<PackageReadmeFile>ReadMe.md</PackageReadmeFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Version>1.0.0</Version>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Include="..\LICENSE">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	  <None Include="..\ReadMe.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="BouncyCastle.Cryptography" Version="2.3.0" />
 		<PackageReference Include="IPNetwork2" Version="2.6.548" />
-		<!--<PackageReference Include="Makaretu.Dns" Version="2.0.1" />-->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="NSec.Cryptography" Version="22.4.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
 		<PackageReference Include="srp" Version="1.0.7" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-		<!--<PackageReference Include="Zeroconf" Version="3.6.11" />-->
 		<PackageReference Include="ZXing.Net.Bindings.ImageSharp.V2" Version="0.16.14" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\README.md</PackagePath>
+		</None>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\LICENSE</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>

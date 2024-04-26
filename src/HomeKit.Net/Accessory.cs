@@ -4,50 +4,58 @@ using HomeKit.Net.Enums;
 namespace HomeKit.Net;
 
 /// <summary>
-/// 配件基类
+/// Accessory base class
 /// </summary>
-public class Accessory
+public abstract class Accessory
 {
-    public Accessory(AccessoryDriver accessoryDriver, string name, int? aid = null)
+    /// <summary>
+    /// Accessory constructor
+    /// </summary>
+    /// <param name="accessoryDriver">Accessory Driver</param>
+    /// <param name="name">Accessory name</param>
+    /// <param name="aid">Accessory ID</param>
+    protected Accessory(AccessoryDriver accessoryDriver, string name, int aid = Const.STANDALONE_AID)
     {
         AccessoryDriver = accessoryDriver;
         Name = name;
-        Aid = aid ?? Const.STANDALONE_AID;
-        Services = new List<Service>();
-        IidManager = new IidManager();
+        Aid = aid;
         AddInfoService();
     }
 
-    public Category Category { get; set; } = Category.CATEGORY_OTHER;
+    /// <summary>
+    /// Accessory category
+    /// </summary>
+    public Category Category { get; protected set; } = Category.CATEGORY_OTHER;
 
     /// <summary>
-    /// Accessory Id
-    /// 配件ID
+    /// Accessory ID
     /// </summary>
-    public int? Aid { get; set; }
+    public int Aid { get; set; }
 
-    public AccessoryDriver AccessoryDriver { get; set; }
+    public AccessoryDriver AccessoryDriver { get; }
 
     /// <summary>
     /// Accessory Name
-    /// 配件显示的名称
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; }
 
-    public IidManager IidManager;
     /// <summary>
-    /// Pair Verify One Encryption Context;配对验证阶段1的密钥上下文
+    /// Accessory ID manager
     /// </summary>
-    // public PairVerifyOneEncryptionContext PairVerifyOneEncryptionContext { get; set; }
+    public IidManager IidManager = new();
+
+    /// <summary>
+    /// Pair Verify One Encryption Context
+    /// </summary>
+    public PairVerifyOneEncryptionContext PairVerifyOneEncryptionContext { get; set; } = new();
+
     /// <summary>
     /// Accessory Services
-    /// 配件拥有的服务
     /// </summary>
-    public List<Service> Services { get; set; }
+    public List<Service> Services { get; } = new();
 
     /// <summary>
     /// add the required `AccessoryInformation` service
-    /// 添加必须的配件信息服务
     /// </summary>
     public void AddInfoService()
     {
@@ -58,40 +66,40 @@ public class Accessory
     }
 
     /// <summary>
-    /// Print setup message to console;在控制台打印设置设置信息
+    /// Print setup message to console
     /// </summary>
     public void SetupMessage()
     {
-        var pinCode = Encoding.UTF8.GetString(AccessoryDriver.State.PinCode);
         var xhmUri = XhmUri();
-        // xhmUri = "X-HM://00A05CLGYXGSL";
+        var pinCode = Encoding.UTF8.GetString(AccessoryDriver.State.PinCode);
         Console.WriteLine($"Setup payload: {xhmUri}");
-        Console.WriteLine("Scan this code with your HomeKit app on your iOS device:请使用家庭app扫描此二维码");
+        Console.WriteLine($"Scan this code with your Home app on your iOS device: {xhmUri}");
+        Console.WriteLine($"Or enter this code in your Home app on your iOS device: {pinCode}");
         QRConsole.Output(xhmUri);
-        Console.WriteLine($"Or enter this code in your HomeKit app on your iOS device: {pinCode}");
     }
 
     /// <summary>
-    /// A HAP representation of this Accessory;配件的hap表示
+    /// A HAP representation of this Accessory
     /// </summary>
-    public virtual AccessoryHapJson ToHap()
+    public AccessoryHapJson ToHap()
     {
-        var result = new AccessoryHapJson()
+        var result = new AccessoryHapJson
         {
-            Aid = Aid.Value,
+            Aid = Aid,
             Services = new List<ServiceHapJson>()
         };
         foreach (var service in Services)
         {
             result.Services.Add(service.ToHap());
         }
+
         return result;
     }
 
     /// <summary>
-    /// Add Service;添加服务
+    /// Add Service
     /// </summary>
-    /// <param name="service"></param>
+    /// <param name="service">Accessory service</param>
     public void AddService(Service service)
     {
         service.Accessory = this;
@@ -105,10 +113,10 @@ public class Accessory
     }
 
     /// <summary>
-    /// get service；获取服务
+    /// Get service
     /// </summary>
-    /// <param name="serviceName"></param>
-    /// <returns></returns>
+    /// <param name="serviceName">Service name</param>
+    /// <returns>Service</returns>
     /// <exception cref="Exception"></exception>
     public Service GetService(string serviceName)
     {
@@ -122,9 +130,9 @@ public class Accessory
     }
 
     /// <summary>
-    /// Generates the X-HM:// uri (Setup Code URI),生成配对时的url
+    /// Generates the X-HM:// uri
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Setup Code URI</returns>
     public string XhmUri()
     {
         long payload = 0;
@@ -133,27 +141,25 @@ public class Accessory
         payload |= 0 & 0xF; // reserved bits
 
         payload <<= 8;
-        payload |= (int)Category & 0xFF; // category
+        payload |= (uint)((int)Category & 0xFF); // category
 
         payload <<= 4;
         payload |= 2 & 0xF; // flags
         payload <<= 27;
 
         var pinCode = Encoding.UTF8.GetString(AccessoryDriver.State.PinCode);
-        // pinCode = "009-42-297";
-        payload |= int.Parse(pinCode.Replace("-", "")) & 0x7FFFFFFF;
+        payload |= (uint)(int.Parse(pinCode.Replace("-", "")) & 0x7FFFFFFF);
 
         var encodedPayload = Base36Converter.ConvertTo(payload);
         encodedPayload = encodedPayload.PadLeft(9, '0');
-        // this.AccessoryDriver.State.SetupId = "76LR";
         return "X-HM://" + encodedPayload + AccessoryDriver.State.SetupId;
     }
 
     /// <summary>
-    /// create a service with the given name and add it to this acc;根据给定名称创建一个服务，并添加到配件中
+    /// Create a service with the given name and add it to this accessory
     /// </summary>
     /// <param name="serviceName"></param>
-    public Service AddPreloadService(string serviceName)
+    protected Service AddPreloadService(string serviceName)
     {
         var service = Loader.LoadService(serviceName);
         if (service == null)
@@ -165,17 +171,24 @@ public class Accessory
         return service;
     }
 
+    /// <summary>
+    /// Get accessory's characteristics
+    /// </summary>
+    /// <param name="aid">Accessory ID</param>
+    /// <param name="iid"></param>
+    /// <returns></returns>
     public Characteristics GetAccessoryCharacteristic(int aid, int iid)
     {
         if (Aid != aid)
         {
-            return null;
+            return null!;
         }
 
         return (Characteristics)IidManager.GetObject(iid);
     }
+
     /// <summary>
-    /// Set Primary Service；设置主服务
+    /// Set Primary Service
     /// </summary>
     public void SetPrimaryService(Service service)
     {
@@ -191,9 +204,9 @@ public class Accessory
 
     public void Publish(object value, IAssignIid sender, string connectionString = "", bool immediate = false)
     {
-        var sendData = new SendEventDataItem()
+        var sendData = new SendEventDataItem
         {
-            Aid = Aid.Value,
+            Aid = Aid,
             Iid = IidManager.GetIid(sender),
             Value = value
         };

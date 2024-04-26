@@ -5,7 +5,7 @@ public static class Const
     public static string BASE_UUID = "-0000-1000-8000-0026BB765291";
 
     // Standalone accessory ID (i.e. not bridged)
-    public static int STANDALONE_AID = 1;
+    public const int STANDALONE_AID = 1;
 
     //Default values
     public static int DEFAULT_CONFIG_VERSION = 1;

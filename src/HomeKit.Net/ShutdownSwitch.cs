@@ -5,7 +5,7 @@ namespace HomeKit.Net;
 public class ShutdownSwitch : Accessory
 {
     public Characteristics CurrentTemperatureCharacteristics { get; set; }
-    public ShutdownSwitch(AccessoryDriver accessoryDriver, string name, int? aid = null) : base(accessoryDriver, name, aid)
+    public ShutdownSwitch(AccessoryDriver accessoryDriver, string name, int aid) : base(accessoryDriver, name, aid)
     {
         var service = AddPreloadService("Switch");
         Category = Category.CATEGORY_SWITCH;

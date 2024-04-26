@@ -9,7 +9,7 @@ public class Bridge : Accessory
 {
     public Dictionary<int, Accessory> Accessories { get; set; }
 
-    public Bridge(AccessoryDriver accessoryDriver, string name, int? aid = null) : base(accessoryDriver, name, aid)
+    public Bridge(AccessoryDriver accessoryDriver, string name) : base(accessoryDriver, name)
     {
         Category = Category.CATEGORY_BRIDGE;
         Accessories = new Dictionary<int, Accessory>();
@@ -22,7 +22,7 @@ public class Bridge : Accessory
             throw new Exception("Bridges cannot be bridged");
         }
 
-        if (accessory.Aid == null|| accessory.Aid == Aid)
+        if (accessory.Aid == Aid)
         {
             //For some reason AID=7 gets unsupported. See issue #61
             for (int i = 2; i < 100; i++)
@@ -40,7 +40,7 @@ public class Bridge : Accessory
         //    throw new Exception("Duplicate AID found when attempting to add accessory");
         //}
 
-        Accessories[accessory.Aid.Value] = accessory;
+        Accessories[accessory.Aid] = accessory;
     }
 
     public Characteristics GetCharacteristic(int aid, int iid)
